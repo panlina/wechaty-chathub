@@ -1,0 +1,11 @@
+{
+  "name": "wechaty-chathub",
+  "version": "0.0.0",
+  "description": "A Wechaty plugin of chathub, a place to create and manage chat functionalities",
+  "keywords": ["wechaty", "chathub"],
+  "author": "Jack Lu <jacklu@jacklu.me>",
+  "license": "ISC",
+  "peerDependencies": {
+    "wechaty": "^0.60.10"
+  }
+}
