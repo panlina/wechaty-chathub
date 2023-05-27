@@ -1,20 +1,33 @@
 /** @typedef { import("wechaty").Wechaty } Wechaty */
-var http = require('http');
+var express = require('express');
+var Chathub = require("./Chathub");
 
 /**
  * @param {Object} config
- * @param {number} config.port web page port
+ * @param {number} config.port web api port
+ * @param {string} config.dir working directory
  */
 module.exports = function WechatyChathubPlugin(config) {
 	return function (/** @type {Wechaty} */bot) {
-		var server = http.createServer((req, res) => {
-			res.statusCode = 200;
-			res.setHeader('Content-Type', 'text/html');
-			res.end('<h1>Welcome to Chathub!</h1>');
+		var chathub = new Chathub(bot, config);
+		var api = express();
+		api.use(express.json({ strict: false }));
+		api.get('/app', (req, res) => {
+			res.json(chathub.getApp());
 		});
-		server.listen(config.port);
+		api.put('/app/:name', (req, res) => {
+			chathub.addApp(req.params.name, req.body);
+			res.status(201).end();
+		});
+		api.delete('/app/:name', (req, res) => {
+			chathub.deleteApp(req.params.name);
+			res.status(204).end();
+		});
+		chathub.start();
+		var server = api.listen(config.port);
 		return () => {
 			server.close();
+			chathub.stop();
 		};
 	};
 };

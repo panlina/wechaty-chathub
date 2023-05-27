@@ -10,7 +10,8 @@ var WechatyChathubPlugin = require('wechaty-chathub');
 var bot = new Wechaty();
 bot.use(
 	WechatyChathubPlugin({
-		port: 3000
+		port: 3000,
+		dir: '.'
 	})
 );
 ```
