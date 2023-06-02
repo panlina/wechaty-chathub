@@ -16,8 +16,13 @@ module.exports = function WechatyChathubPlugin(config) {
 			res.json(chathub.getApp());
 		});
 		api.put('/app/:name', (req, res) => {
-			chathub.addApp(req.params.name, req.body);
-			res.status(201).end();
+			if (req.params.name in chathub.app) {
+				chathub.updateApp(req.params.name, req.body);
+				res.status(204).end();
+			} else {
+				chathub.addApp(req.params.name, req.body);
+				res.status(201).end();
+			}
 		});
 		api.delete('/app/:name', (req, res) => {
 			chathub.deleteApp(req.params.name);

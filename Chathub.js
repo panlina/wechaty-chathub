@@ -49,6 +49,20 @@ class Chathub {
 	 * @param {string} name
 	 * @param {string} app
 	 */
+	updateApp(name, app) {
+		this.stopApp(name);
+		this.startApp(name, app);
+		{
+			var file = path.join(this.dir, 'app.json');
+			var data = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : {};
+			data[name] = app;
+			fs.writeFileSync(file, JSON.stringify(data, undefined, '\t'), 'utf8');
+		}
+	}
+	/**
+	 * @param {string} name
+	 * @param {string} app
+	 */
 	startApp(name, app) {
 		var installer = WechatyChatscriptPlugin(app);
 		var uninstaller = installer(this.bot);
