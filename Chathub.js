@@ -61,6 +61,23 @@ class Chathub {
 	}
 	/**
 	 * @param {string} name
+	 * @param {string} newName
+	 */
+	renameApp(name, newName) {
+		var app = this.app[name];
+		delete this.app[name];
+		this.app[newName] = app;
+		{
+			var file = path.join(this.dir, 'app.json');
+			var data = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : {};
+			var app = data[name];
+			delete data[name];
+			data[newName] = app;
+			fs.writeFileSync(file, JSON.stringify(data, undefined, '\t'), 'utf8');
+		}
+	}
+	/**
+	 * @param {string} name
 	 * @param {string} app
 	 */
 	startApp(name, app) {

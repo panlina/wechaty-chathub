@@ -28,6 +28,14 @@ module.exports = function WechatyChathubPlugin(config) {
 			chathub.deleteApp(req.params.name);
 			res.status(204).end();
 		});
+		api.move('/app/:name', (req, res) => {
+			var destination = req.header('Destination');
+			var newName = decodeURIComponent(destination.substr("/app/".length));
+			chathub.renameApp(req.params.name, newName);
+			res.status(201)
+				.header('Location', `/app/${newName}`)
+				.end();
+		});
 		chathub.start();
 		var server = api.listen(config.port);
 		return () => {
