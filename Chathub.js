@@ -62,8 +62,14 @@ class Chathub {
 	/**
 	 * @param {string} name
 	 * @param {string} newName
+	 * @param {boolean} [overwrite=true]
 	 */
-	renameApp(name, newName) {
+	renameApp(name, newName, overwrite = true) {
+		if (newName in this.app && newName != name)
+			if (overwrite)
+				this.stopApp(newName);
+			else
+				throw new Error("New name already exists.")
 		var app = this.app[name];
 		delete this.app[name];
 		this.app[newName] = app;

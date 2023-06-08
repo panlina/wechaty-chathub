@@ -39,10 +39,18 @@ module.exports = function WechatyChathubPlugin(config) {
 			}
 			var destination = req.header('Destination');
 			var newName = decodeURIComponent(destination.substr("/app/".length));
-			chathub.renameApp(req.params.name, newName);
-			res.status(201)
-				.header('Location', `/app/${newName}`)
-				.end();
+			if (req.header('Overwrite'))
+				var overwrite = req.header('Overwrite') == 'T';
+			var newNameExists = newName in chathub.app;
+			try {
+				chathub.renameApp(req.params.name, newName, overwrite);
+				res.status(newNameExists ? 204 : 201);
+				if (!newNameExists)
+					res.header('Location', `/app/${newName}`);
+				res.end();
+			} catch (e) {
+				res.status(412).contentType('text/plain').send(e.message);
+			}
 		});
 		chathub.start();
 		var server = api.listen(config.port);
