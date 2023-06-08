@@ -25,10 +25,18 @@ module.exports = function WechatyChathubPlugin(config) {
 			}
 		});
 		api.delete('/app/:name', (req, res) => {
+			if (!(req.params.name in chathub.app)) {
+				res.sendStatus(404);
+				return;
+			}
 			chathub.deleteApp(req.params.name);
 			res.status(204).end();
 		});
 		api.move('/app/:name', (req, res) => {
+			if (!(req.params.name in chathub.app)) {
+				res.sendStatus(404);
+				return;
+			}
 			var destination = req.header('Destination');
 			var newName = decodeURIComponent(destination.substr("/app/".length));
 			chathub.renameApp(req.params.name, newName);
