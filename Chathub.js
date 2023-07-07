@@ -13,7 +13,7 @@ class Chathub {
 	constructor(bot, config) {
 		this.bot = bot;
 		this.dir = config.dir;
-		/** @type {{[name: string]: { installer: WechatyPlugin, uninstaller: WechatyPluginReturn }}} */
+		/** @type {{[name: string]: { installer: WechatyPlugin, uninstaller: WechatyPluginReturn, error: { time: Date, error: Error }[] }}} */
 		this.app = {};
 	}
 	/** @returns {{[name: string]: string}} */
@@ -91,8 +91,12 @@ class Chathub {
 		var uninstaller = installer(this.bot);
 		this.app[name] = {
 			installer: installer,
-			uninstaller: uninstaller
+			uninstaller: uninstaller,
+			error: []
 		};
+		uninstaller.eventEmitter.on('error', e => {
+			this.app[name].error.push({ time: new Date(), error: e });
+		});
 	}
 	/** @param {string} name */
 	stopApp(name) {
