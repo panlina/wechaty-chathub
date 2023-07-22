@@ -55,7 +55,14 @@ module.exports = function WechatyChathubPlugin(config) {
 		api.get('/app/:name/error', (req, res) => {
 			res.json(
 				chathub.app[req.params.name].error.map(
-					({ time, error }) => ({ time: time, error: error.message })
+					({ time, error }) => {
+						var source = error.program?.node.source;
+						return {
+							time: time,
+							location: source ? { start: source.startIdx, end: source.endIdx } : undefined,
+							message: error.message
+						};
+					}
 				)
 			);
 		});
